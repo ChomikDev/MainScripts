@@ -1,0 +1,493 @@
+local workspace = workspace or game:GetService("Workspace")
+local game = game or workspace.Parent
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Settings = settings()
+local Physics = Settings["Physics"]
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local StarterGui = game:GetService("StarterGui")
+
+local lp = Players.LocalPlayer or Players:WaitForChild("LocalPlayer")
+local char = lp.Character or lp.CharacterAdded:Wait()
+local hum = char:FindFirstChildOfClass("Humanoid")
+local hrp = char:FindFirstChild("HumanoidRootPart") or char:WaitForChild("HumanoidRootPart")
+
+local repsignal = replicatesignal or firesignal
+local sethiddenproperty = sethiddenproperty or set_hidden_property or sethiddenprop
+local setsimulationradius = setsimulationradius or set_simulation_radius or setsimradius
+local setfpscap = setfpscap or setfps
+local setscriptable = setscriptable or set_scriptable
+local cam = workspace.CurrentCamera
+local delay = 0.01
+local ang, ang2, ang3 = CFrame.Angles(math.rad(-90), math.rad(90), 0), CFrame.Angles(math.rad(90), math.rad(-90), 0), CFrame.Angles(0, math.rad(92), 0)
+
+local FTouch = false
+local DTouch = false
+local Touch = false
+local pp = false
+local permadeath = false
+
+if CoreGui:FindFirstChild("FingerGui") then
+  CoreGui:FindFirstChild("FingerGui"):Destroy()
+end
+if ReplicatedStorage:FindFirstChild("Remotes") then
+  if ReplicatedStorage.Remotes:FindFirstChild("NoWait") then
+    ReplicatedStorage.Remotes.NoWait:Destroy()
+  end
+end
+
+local function findPlayer(name)
+  for _, player in pairs(Players:GetPlayers()) do
+    if string.lower(player.Name):sub(1, #name) == string.lower(name) or string.lower(player.DisplayName):sub(1, #name) == string.lower(name) then
+      targetplr = player
+      return player
+    end
+  end
+  return nil
+end
+local function notify(title, text, duration)
+  StarterGui:SetCore("SendNotification", {
+    Title = title;
+    Text = text;
+    Duration = duration or 5; 
+  })
+end
+local function setnocolimodel(model, bval)
+  if not model then return end
+  for _,setnocoli in pairs(model:GetDescendants()) do
+    if setnocoli:IsA("BasePart") then
+      setnocoli.CanCollide = bval
+    end
+  end
+end
+for _, noclipplr in pairs(Players:GetPlayers()) do
+  if noclipplr ~= lp then
+    RunService.Stepped:Connect(function()
+      setnocolimodel(noclipplr.Character, false)
+    end)
+  end
+end
+Players.PlayerAdded:Connect(function(ever)
+  RunService.Stepped:Connect(function()
+    setnocolimodel(ever.Character, false)
+  end)
+end)
+	for _,x in ipairs(workspace:GetDescendants()) do
+  if x:IsA("TouchTransmitter") or x:IsA("TouchInterest") then
+    x:Destroy()
+  end
+end
+Workspace.InterpolationThrottling = Enum.InterpolationThrottlingMode.Disabled
+Workspace.Retargeting = "Disabled"
+lp.ReplicationFocus = Workspace
+
+Physics.PhysicsEnvironmentalThrottle = Enum.EnviromentalPhysicsThrottle.Disabled
+Physics.AllowSleep = false
+Physics.ThrottleAdjustTime = math.huge
+
+local function trackTarget(targetPlayer)
+  local targetChar = targetPlayer.Character or targetPlayer.CharacterAdded:Wait()
+  local hum = targetChar:WaitForChild("Humanoid")
+  hum.Died:Connect(function()
+    while true do
+      if targetPlayer.Character then
+        if Touch == true or pp == true then
+          fakebody.CFrame = targetChar.HumanoidRootPart.CFrame * ang
+          task.wait(delay)
+        elseif FTouch == true or DTouch == true then
+          fakebody.CFrame = targetChar.HumanoidRootPart.CFrame * ang2
+          task.wait(delay)
+        end
+      else
+        break
+      end
+    end
+  end)
+  targetPlayer.CharacterAdded:Connect(function()
+    local newChar = targetPlayer.Character
+    local newHRP = newChar:WaitForChild("HumanoidRootPart")
+    while true do
+      if targetPlayer.Character then
+        if Touch == true or pp == true then
+          fakebody.CFrame = targetHRP.CFrame * ang
+          task.wait(delay)
+        elseif FTouch == true or DTouch == true then
+          fakebody.CFrame = targetHRP.CFrame * ang2
+          task.wait(delay)
+        end
+      else
+        break
+      end
+    end
+  end)
+end
+
+local FingerGUI = Instance.new("ScreenGui", game:GetService("CoreGui"))
+local InvisFrame = Instance.new("Frame", FingerGUI)
+local UICorner = Instance.new("UICorner", InvisFrame)
+local UIStroke = Instance.new("UIStroke", InvisFrame)
+local TitleLabel = Instance.new("TextLabel", InvisFrame)
+local Targetbox = Instance.new("TextBox", InvisFrame)
+local UICornerBox = Instance.new("UICorner", Targetbox)
+local FingerButton = Instance.new("TextButton", InvisFrame)
+local UICornerButton = Instance.new("UICorner", FingerButton)
+
+local ToggleTabButton = Instance.new("TextButton", InvisFrame)
+local UICornerToggle = Instance.new("UICorner", ToggleTabButton)
+
+local TabFrame = Instance.new("Frame", InvisFrame)
+local UICornerTab = Instance.new("UICorner", TabFrame)
+
+local BtnBehind = Instance.new("TextButton", TabFrame)
+local BtnHead = Instance.new("TextButton", TabFrame)
+local BtnPp = Instance.new("TextButton", TabFrame)
+local BtnBetweenLegs = Instance.new("TextButton", TabFrame)
+
+InvisFrame.Size = UDim2.new(0, 260, 0, 120)
+InvisFrame.Position = UDim2.new(0.5, -130, 0.5, -60)
+InvisFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+InvisFrame.BackgroundTransparency = 0.3
+InvisFrame.Active = true
+InvisFrame.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 10)
+UIStroke.Color = Color3.fromRGB(255, 255, 255)
+UIStroke.Thickness = 1.5
+
+TitleLabel.Size = UDim2.new(1, 0, 0, 20)
+TitleLabel.Text = "FingerGUI (v.3)"
+TitleLabel.Font = Enum.Font.Sarpanch
+TitleLabel.TextSize = 16
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.BackgroundTransparency = 1
+
+Targetbox.Size = UDim2.new(0, 240, 0, 30)
+Targetbox.Position = UDim2.new(0.5, -120, 0, 30)
+Targetbox.PlaceholderText = "Enter Target Name"
+Targetbox.Font = Enum.Font.Sarpanch
+Targetbox.TextSize = 18
+Targetbox.ClearTextOnFocus = true
+Targetbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+Targetbox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Targetbox.Text=""
+UICornerBox.CornerRadius = UDim.new(0, 8)
+
+FingerButton.Size = UDim2.new(0, 120, 0, 30)
+FingerButton.Position = UDim2.new(0.5, -60, 0, 70)
+FingerButton.Text = "Finger"
+FingerButton.Font = Enum.Font.Sarpanch
+FingerButton.TextSize = 18
+FingerButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+FingerButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+FingerButton.BackgroundTransparency = 0.2
+
+ToggleTabButton.Size = UDim2.new(0, 25, 0, 25)
+ToggleTabButton.Position = UDim2.new(1, -30, 1, -30)
+ToggleTabButton.Text = ">"
+ToggleTabButton.Font = Enum.Font.Sarpanch
+ToggleTabButton.TextSize = 18
+ToggleTabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleTabButton.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+UICornerToggle.CornerRadius = UDim.new(0, 6)
+
+TabFrame.Size = UDim2.new(0, 120, 0, 120)
+TabFrame.Position = UDim2.new(1, 5, 1, -125)
+TabFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+TabFrame.Visible = false
+UICornerTab.CornerRadius = UDim.new(0, 8)
+
+BtnBehind.Size = UDim2.new(0, 50, 0, 50)
+BtnBehind.Position = UDim2.new(0, 5, 0, 5)
+BtnBehind.Text = "Behind"
+BtnBehind.Font = Enum.Font.Sarpanch
+BtnBehind.TextSize = 14
+BtnBehind.TextColor3 = Color3.fromRGB(255,255,255)
+BtnBehind.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+BtnHead.Size = UDim2.new(0, 50, 0, 50)
+BtnHead.Position = UDim2.new(0, 65, 0, 5)
+BtnHead.Text = "Head"
+BtnHead.Font = Enum.Font.Sarpanch
+BtnHead.TextSize = 14
+BtnHead.TextColor3 = Color3.fromRGB(255,255,255)
+BtnHead.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+BtnPp.Size = UDim2.new(0, 50, 0, 50)
+BtnPp.Position = UDim2.new(0, 5, 0, 65)
+BtnPp.Text = "Pp"
+BtnPp.Font = Enum.Font.Sarpanch
+BtnPp.TextSize = 14
+BtnPp.TextColor3 = Color3.fromRGB(255,255,255)
+BtnPp.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+BtnBetweenLegs.Size = UDim2.new(0, 50, 0, 50)
+BtnBetweenLegs.Position = UDim2.new(0, 65, 0, 65)
+BtnBetweenLegs.Text = "Between Legs"
+BtnBetweenLegs.Font = Enum.Font.Sarpanch
+BtnBetweenLegs.TextSize = 10
+BtnBetweenLegs.TextColor3 = Color3.fromRGB(255,255,255)
+BtnBetweenLegs.BackgroundColor3 = Color3.fromRGB(80,80,80)
+
+FingerButton.MouseButton1Click:Connect(function()
+  local targplr = findPlayer(Targetbox.Text)
+  if fakebody then
+    fakebody:Destroy()
+  end
+  cam.CameraSubject = nil
+  cam.CameraSubject = lp
+  
+  if not repsignal then 
+    notify("Failed", "Executor doesnt support reanimation", 3)
+    return 
+    end
+  if targplr then
+    notify("Loading perm death..", "Please dont spam click button, finger gui is loading.", 3)
+    repsignal(lp.ConnectDiedSignalBackend)
+    task.wait(Players.RespawnTime+.1)
+    
+    local lp = Players.LocalPlayer or Players:WaitForChild("LocalPlayer")
+    local char = lp.Character or lp.CharacterAdded:Wait()
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    local cam = workspace.CurrentCamera
+    local repsignal = replicatesignal or firesignal
+    local Finger = char["WDW_FoamFinger"]
+    local FoamFinger = Finger:WaitForChild("Handle")
+    
+    for i,v in next, char:GetDescendants() do
+      if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
+        RunService.Heartbeat:Connect(function()
+          v.Velocity = Vector3.new(-30, 0, 0)
+        end)
+      end
+    end
+    RunService.Heartbeat:Connect(function()
+      for z,x in pairs(char:GetChildren()) do
+        if x:IsA("Accessory") then
+          x.Handle.Velocity = Vector3.new(0, 35, 0)
+        end
+      end
+    end)
+    RunService.Heartbeat:Connect(function()
+      pcall(function()
+        setsimulationradius(10e1, 10e1)
+      end)
+    end)
+    
+    local fakebody = Instance.new("Part", workspace)
+    fakebody.Name = "Part"
+    fakebody.Size = Vector3.new(1, 1, 1)
+    fakebody.Transparency = 1
+    fakebody.CanCollide = false
+    fakebody.Anchored = true
+    fakebody.Position = FoamFinger.Position
+    
+    local attachfb = Instance.new("Attachment", fakebody)
+    local attachff = Instance.new("Attachment", FoamFinger)
+    local alighpos = Instance.new("AlignPosition", FoamFinger)
+    alighpos.Attachment0 = attachff
+    alighpos.Attachment1 = attachfb
+    alighpos.RigidityEnabled = false
+    alighpos.MaxForce = math.pow(math.huge, math.huge) * math.huge
+    alighpos.Responsiveness = math.huge
+    
+    local alignorien = Instance.new("AlignOrientation", FoamFinger)
+    alignorien.Attachment0 = attachff
+    alignorien.Attachment1 = attachfb
+    alignorien.RigidityEnabled = false
+    alignorien.MaxTorque = math.pow(math.huge, math.huge) * math.huge
+    alignorien.Responsiveness = math.huge
+    
+    local function loopfingeranim()
+      while FTouch do
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -4) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -3.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -3) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -2.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -2) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -1.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -1) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -1.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -2) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -2.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -3) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1.2, -3.5) * ang2
+        task.wait(delay)
+      end
+    end
+    local function loopfingeranim2()
+      while Touch do
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 3) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 2.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 2) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 1) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 0.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 0) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 0.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 1) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 2) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 2.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, 3) * ang
+        task.wait(delay)
+      end
+    end
+    local function loopfingeranim3()
+      while DTouch do
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -4) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -3.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -3) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -2.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -2) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -1.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -1) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -1.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -2) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -2.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -3) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -3.5) * ang2
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.5, -4) * ang2
+        task.wait(delay)
+      end
+    end
+    local function loopenis()
+      while pp do
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        task.wait(delay)
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        fakebody.CFrame = targplr.Character.HumanoidRootPart.CFrame * CFrame.new(0, -1.6, -1.5) * ang
+        task.wait(delay)
+        
+        
+      end
+    end
+    
+    Touch = true
+    
+    BtnBehind.MouseButton1Click:Connect(function()
+	 Touch = true
+ FTouch = false
+ DTouch = false
+ pp = false
+loopfingeranim2()
+end)
+
+BtnHead.MouseButton1Click:Connect(function()
+	Touch = false
+FTouch = true
+DTouch = false
+pp = false
+loopfingeranim()
+end)
+
+BtnPp.MouseButton1Click:Connect(function()
+	  Touch = false
+FTouch = false
+DTouch = false
+pp = true
+loopenis()
+end)
+
+BtnBetweenLegs.MouseButton1Click:Connect(function()
+	 Touch = false
+FTouch = false
+DTouch = true
+pp = false
+loopfingeranim3()
+end)
+
+local opened = false
+ToggleTabButton.MouseButton1Click:Connect(function()
+	opened = not opened
+	TabFrame.Visible = opened
+	if opened then
+		updateButton(BtnBehind,"bh")
+		updateButton(BtnHead,"hd")
+		updateButton(BtnPp,"pipi")
+		updateButton(BtnBetweenLegs,"bl")
+	end
+end)
+    
+    hrp.CFrame = hrp.CFrame * CFrame.new(0, -27.63527, 0)
+    task.wait(1.5)
+    hum.Health = 0
+    local function loopbang()
+      
+      
+      FoamFinger.CanCollide = false
+      FoamFinger = fakebody
+      cam.CameraSubject = nil
+      cam.CameraSubject = targplr.Character:WaitForChild("Humanoid")
+        
+      if Touch == true then
+        loopfingeranim2()
+      elseif FTouch == true then
+        loopfingeranim()
+      elseif DTouch == true then
+        loopfingeranim3()
+      elseif pp == true then
+        loopenis()
+      end
+    end
+    
+    task.spawn(loopbang)
+    targplr.CharacterAdded:Connect(function()
+      task.spawn(loopbang)
+    end)
+  end
+end)
+
+notify("Credits", "FE Finger made by gerdroid", 1)
+
