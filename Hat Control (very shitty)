@@ -1,0 +1,219 @@
+local booleans={}
+local b_v1,b_v2,b_v3,b_v4,b_v4,b_v5,b_v6,b_v7,b_v7,b_v8,b_v9,b_v10,b_v11,b_v12,b_v13,b_v14=nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil
+local createbool = true
+local nan = 0/0
+local mh = math.huge
+local env = getgenv()
+
+local gerdroid_game = game or workspace.Parent
+--booleanv1
+
+local gerdroid_workspace = workspace or gerdroid_game:GetService('Workspace') 
+--booleanv2
+
+local gerdroid_players = gerdroid_game:GetService('Players') 
+--booleanv3
+
+local gerdroid_lp = gerdroid_players['LocalPlayer']
+--booleanv4
+
+local gerdroid_char = gerdroid_lp['Character'] or gerdroid_lp['CharacterAdded']:wait()
+--booleanv5
+
+local gerdroid_hrp = gerdroid_char:FindFirstChild('HumanoidRootPart')
+--booleanv6
+
+local gerdroid_hum = gerdroid_char:FindFirstChildWhichIsA('Humanoid')
+--booleanv7
+
+local gerdroid_bool_netless_mode = true --optional
+--booleanv8
+
+local gerdroid_part_transparency = 1
+--booleanv9
+
+local gerdroid_part_bool_collide = false
+--booleanv10
+
+local gerdroid_part_size = Vector3.new(1,1,1)
+--booleanv11
+
+local gerdroid_part_bool_anchored = true
+--booleanv12
+
+local gerdroid_players_respawn_time_num = gerdroid_players['RespawnTime']+0.1
+--booleanv13
+
+local gerdroid_humanoid_kill_health = 0
+--booleanv14
+
+-- instance
+local gerdroid_part = Instance.new('Part',workspace)
+
+-- permadeath
+local function gerdroid_permadeath(gerdroid_function_data_model)
+if(gerdroid_function_data_model) then
+if(replicatesignal)then
+replicatesignal(gerdroid_lp.ConnectDiedSignalBackend)
+task.wait(gerdroid_players_respawn_time_num)
+gerdroid_hum['Health'] = gerdroid_humanoid_kill_health
+end
+end
+end
+
+
+--start
+
+local isnetworkowner = isnetworkowner or function(netpart)
+  return netpart.ReceiveAge == 0
+end
+
+function Move(pid, cframe)
+  pid.Velocity = Vector3.new(0,30,0)
+  local tween = game:GetService("TweenService"):Create(pid, TweenInfo.new(0), {CFrame = cframe})
+  tween:Play()
+end
+
+gerdroid_part['Transparency'] = gerdroid_part_transparency;
+
+gerdroid_part['CanCollide'] = gerdroid_part_bool_collide;
+
+gerdroid_part['Size'] = gerdroid_part_size;
+
+gerdroid_part['Anchored'] = gerdroid_part_bool_anchored;
+
+if sethiddenproperty then
+  sethiddenproperty(gerdroid_part,'NetworkIsSleeping',false)
+end
+
+local gp = gerdroid_part:Clone()
+gp.Parent = workspace
+
+gerdroid_part:Destroy()
+
+local lp = game:GetService('Players').LocalPlayer
+local char = lp.Character or lp.CharacterAdded:wait()
+local hrp = char.HumanoidRootPart
+local hum = char.Humanoid
+local rp = hum.RootPart
+local tor = char.Torso
+
+gp.CFrame = tor.CFrame * CFrame.new(0,3,0)
+
+workspace['FallenPartsDestroyHeight'] = nan
+workspace['CurrentCamera']['CameraSubject'] = gp
+
+game:GetService('RunService')['Heartbeat']:Connect(function()
+  if lp and lp.SimulationRadius then
+    lp.SimulationRadius = 1000
+  else
+    sethiddenproperty(lp,'SimulationRadius',1000)
+  end
+end)
+
+local spid = 0.5
+local rs = game:GetService('RunService')
+local cp = char.Parent
+pcall(function()
+if sethiddenproperty then
+  sethiddenproperty(char,'NetworkIsSleeping',true)
+end
+end)
+char.Parent = workspace
+rs['RenderStepped']:wait()
+char.Parent = cp
+pcall(function()
+if sethiddenproperty then
+  sethiddenproperty(char,'NetworkIsSleeping',false)
+end
+end)
+
+local kickmsgv1='Wear some accessories bald poor no robux n1ğger'
+local hats = {}
+for _,h in ipairs(char:GetDescendants()) do
+  if h:IsA('Accessory') then
+    table.insert(hats,h)
+  end
+end
+if #hats==0 then lp:Kick(kickmsgv1) end
+
+local hat = char:FindFirstChildOfClass('Accessory')
+local hand = hat['Handle']
+local kickmsg='Exploit doesnt support replicatesignal permadeath'
+local replicatesignalsupport = nil
+if replicatesignal then
+  replicatesignalsupport = true
+else
+  replicatesignalsupport = false
+end
+
+local cf1 = CFrame.new(0,0,0)
+local cf2 = CFrame.Angles(0,0,0)
+
+if replicatesignalsupport==true then
+  replicatesignal(lp.ConnectDiedSignalBackend)
+  
+  task.wait(game.Players.RespawnTime + 0.1)
+  
+  replicatesignal(lp.Kill)
+  -- im gonna fix revers tool later and add collision
+  --[[
+  local revers = Instance.new('Tool',lp.Backpack)
+  revers.Name = 'Reverse hat'
+  revers.ToolTip = 'click to reverse'
+  revers.RequiresHandle = false
+  revers.Enabled = true
+  revers.CanBeDropped = true
+  revers.Activated:Connect(function()
+    cf2 = CFrame.Angles(math.rad(90),0,0)
+  end)
+  revers.UnEquipped:Connect(function()
+    cf2 = CFrame.Angles(0,0,0)
+  end)
+  ]]--
+  local StarterGui = game:GetService('StarterGui')
+  local RespawnEvent = Instance.new("BindableEvent")
+  RespawnEvent.Event:Once(function()
+    StarterGui:SetCore("ResetButtonCallback", true)    
+
+    replicatesignal(lp.ConnectDiedSignalBackend)
+  end)
+  StarterGui:SetCore("ResetButtonCallback", RespawnEvent)
+  pcall(function()
+    hand.Velocity = Vector3.new(0,30,0)
+    hand.CustomPhysicalProperties = PhysicalProperties.new(0,0,0,0,0)
+  end)
+  pcall(function()
+  if sethiddenproperty then
+  sethiddenproperty(hat,'NetworkIsSleeping',false)
+  end
+  end)
+  local flySpeed = 1
+  local verticalSpeed = 3
+  local currentVelocity = Vector3.new(0,0,0)
+  
+  game:GetService('RunService').RenderStepped:Connect(function(dt)
+    local mdir = hum.MoveDirection
+    local move = Vector3.new(0, 0, 0)
+    
+    if mdir.Magnitude > 0 then
+      move = Vector3.new(mdir.X, 0, mdir.Z).Unit * flySpeed * dt * 60
+    end
+    if mdir.Y > 0 then
+      move = move + Vector3.new(0, verticalSpeed * dt * 60, 0)
+    elseif mdir.Y < 0 then
+      move = move + Vector3.new(0, -verticalSpeed * dt * 60, 0)
+    end
+    if mdir.Magnitude > 0 then
+      local lookVector = Vector3.new(mdir.X, mdir.Y, mdir.Z)
+      gp.CFrame = CFrame.new(gp.Position, gp.Position + lookVector)
+    end
+    gp.CFrame = gp.CFrame + move
+  end)
+  while hat and hand do
+    hand.CFrame = gp.CFrame*cf1*cf2
+    rs['RenderStepped']:wait()
+  end
+else
+  lp:Kick(kickmsg)
+end
