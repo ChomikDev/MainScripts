@@ -1,2 +1,375 @@
---comingsoon
-print("tezzt!!")
+--[[
+Current Version is: 5.0 → GUI Updated to Modern Style
+Credits to Maksimilianych228 and Gerdroid
+]]
+--[[ MAIN SCRIPTS ]]--
+task.spawn(function()
+  loadstring(game:HttpGet("https://pastebin.com/raw/3KcF9M0m"))()
+  -- loadstring(game:HttpGet("https://raw.githubusercontent.com/sovetskii-shashlik/AdonisAntikick/refs/heads/main/Antikick"))()
+end)
+
+--[[ SERVICES ]]--
+local Players = game:GetService("Players")
+local StarterGui = game:GetService("StarterGui")
+local TweenService = game:GetService("TweenService")
+local SoundService = game:GetService("SoundService")
+local RunService = game:GetService("RunService")
+local Stats = game:GetService("Stats")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+
+--[[ PLAYER DETECTION ]]--
+if player.Name == "prespeshnikShashlika" or player.Name == "MRP76REBORN" then
+  print("Shashlik Owner Detected!")
+elseif player.Name == "Roblox" or player.Name == "Skid" then
+  print("Fucking Nigger Ass Retard Detected!")
+end
+
+--[[ CLEANUP ]]--
+local coreGui = game:GetService("CoreGui")
+if coreGui:FindFirstChild("ShashlikExecutor") then
+    coreGui:FindFirstChild("ShashlikExecutor"):Destroy()
+end
+
+--[[ GUI ]]--
+local screenGui = Instance.new("ScreenGui", coreGui)
+screenGui.Name = "ShashlikExecutor"
+screenGui.ResetOnSpawn = false
+
+--[[ Main Container ]]--
+local mainContainer = Instance.new("Frame")
+mainContainer.Size = UDim2.new(0, 600, 0, 300)
+mainContainer.Position = UDim2.new(0.5, -300, 0.5, -200)
+mainContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+mainContainer.BorderSizePixel = 0
+mainContainer.ClipsDescendants = true
+mainContainer.Active = true
+mainContainer.Draggable = true
+mainContainer.Visible = false
+mainContainer.Parent = screenGui
+
+
+--[[ Corner & Shadow ]]--
+local corner = Instance.new("UICorner", mainContainer)
+corner.CornerRadius = UDim.new(0, 8)
+
+local shadow = Instance.new("ImageLabel", mainContainer)
+shadow.Size = UDim2.new(1, 20, 1, 20)
+shadow.Position = UDim2.new(0, -10, 0, -10)
+shadow.BackgroundTransparency = 1
+shadow.Image = "rbxassetid://1316045217"
+shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+shadow.ImageTransparency = 0.8
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+shadow.ZIndex = -1
+
+--[[ Top Bar ]]--
+local topBar = Instance.new("Frame", mainContainer)
+topBar.Size = UDim2.new(1, 0, 0, 30)
+topBar.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+topBar.BorderSizePixel = 0
+
+local topBarCorner = Instance.new("UICorner", topBar)
+topBarCorner.CornerRadius = UDim.new(0, 8)
+
+--[[ Title ]]--
+local title = Instance.new("TextLabel", topBar)
+title.Size = UDim2.new(1, -80, 1, 0)
+title.Position = UDim2.new(0, 10, 0, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Text = "SHASHLIK EXECUTOR v5.0"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 14
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+--[[ Close & Minimize ]]--
+local closeButton = Instance.new("TextButton", topBar)
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 2)
+closeButton.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 12
+
+local closeCorner = Instance.new("UICorner", closeButton)
+closeCorner.CornerRadius = UDim.new(0, 4)
+
+local minusButton = Instance.new("TextButton", topBar)
+minusButton.Size = UDim2.new(0, 25, 0, 25)
+minusButton.Position = UDim2.new(1, -60, 0, 2)
+minusButton.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+minusButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minusButton.Text = "–"
+minusButton.Font = Enum.Font.GothamBold
+minusButton.TextSize = 16
+
+local minusCorner = Instance.new("UICorner", minusButton)
+minusCorner.CornerRadius = UDim.new(0, 4)
+
+--[[ Editor Frame ]]--
+local editorFrame = Instance.new("Frame", mainContainer)
+editorFrame.Size = UDim2.new(1, -20, 0, 190)
+editorFrame.Position = UDim2.new(0, 10, 0, 40)
+editorFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+editorFrame.BorderSizePixel = 0
+editorFrame.ClipsDescendants = true
+
+local editorCorner = Instance.new("UICorner", editorFrame)
+editorCorner.CornerRadius = UDim.new(0, 6)
+
+--[[ Script Box ]]--
+local scriptBox = Instance.new("TextBox", editorFrame)
+scriptBox.Size = UDim2.new(1, -10, 1, -10)
+scriptBox.Position = UDim2.new(0, 5, 0, 5)
+scriptBox.BackgroundTransparency = 1
+scriptBox.TextColor3 = Color3.fromRGB(220, 220, 220)
+scriptBox.Text = ""
+scriptBox.PlaceholderText = "--// Welcome to shashlik exec! Put on textbox ;cmds and execute"
+scriptBox.Font = Enum.Font.Code
+scriptBox.TextSize = 12
+scriptBox.TextXAlignment = Enum.TextXAlignment.Left
+scriptBox.TextYAlignment = Enum.TextYAlignment.Top
+scriptBox.ClearTextOnFocus = false
+scriptBox.MultiLine = true
+scriptBox.TextWrapped = false
+
+--[[ FPS/Ping ]]--
+local statsLabel = Instance.new("TextLabel", scriptBox)
+statsLabel.Size = UDim2.new(0, 180, 0, 20)
+statsLabel.Position = UDim2.new(1, -180, 1, -20)
+statsLabel.Text = "FPS: 0 PING: 0"
+statsLabel.TextSize = 12
+statsLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+statsLabel.BackgroundTransparency = 1
+statsLabel.Font = Enum.Font.Gotham
+
+RunService.RenderStepped:Connect(function(dt)
+    task.delay(1.5, function()
+        local fps = math.floor(1 / dt)
+        local ping = Stats.Network.ServerStatsItem["Data Ping"]:GetValueString()
+        statsLabel.Text = string.format("FPS: %d PING: %s", fps, ping)
+    end)
+end)
+
+--[[ Button Frame ]]--
+local buttonFrame = Instance.new("Frame", mainContainer)
+buttonFrame.Size = UDim2.new(1, -20, 0, 50)
+buttonFrame.Position = UDim2.new(0, 10, 0, 240)
+buttonFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+buttonFrame.BorderSizePixel = 0
+
+local buttonFrameCorner = Instance.new("UICorner", buttonFrame)
+buttonFrameCorner.CornerRadius = UDim.new(0, 6)
+
+local buttonPanel = Instance.new("Frame", buttonFrame)
+buttonPanel.Size = UDim2.new(1, -20, 1, -10)
+buttonPanel.Position = UDim2.new(0, 10, 0, 5)
+buttonPanel.BackgroundTransparency = 1
+
+--[[ Helper to create buttons ]]--
+local function makeButton(parent, pos, text, color)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 100, 1, 0)
+    btn.Position = pos
+    btn.Text = text
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 14
+    btn.BackgroundColor3 = color
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.Parent = parent
+    local c = Instance.new("UICorner", btn)
+    c.CornerRadius = UDim.new(0, 6)
+    return btn
+end
+
+local executeButton = makeButton(buttonPanel, UDim2.new(0, 10, 0, 0), "EXECUTE", Color3.fromRGB(15, 15, 20))
+local execClipButton = makeButton(buttonPanel, UDim2.new(0, 120, 0, 0), "CLIPBOARD", Color3.fromRGB(15, 15, 20))
+local copyButton = makeButton(buttonPanel, UDim2.new(0, 230, 0, 0), "COPY", Color3.fromRGB(15, 15, 20))
+local pasteButton = makeButton(buttonPanel, UDim2.new(0, 340, 0, 0), "PASTE", Color3.fromRGB(15, 15, 20))
+local clearButton = makeButton(buttonPanel, UDim2.new(0, 450, 0, 0), "CLEAR", Color3.fromRGB(15, 15, 20))
+
+--[[ Hover effect ]]--
+local function setupHover(btn)
+    btn.MouseEnter:Connect(function() TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.2}):Play() end)
+    btn.MouseLeave:Connect(function() TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play() end)
+end
+for _, b in ipairs({executeButton, clearButton, copyButton, pasteButton, execClipButton, consoleButton, closeButton, minusButton}) do
+    setupHover(b)
+end
+
+--[[ Sound ]]--
+local function PlayButtonSound()
+    local snd = Instance.new("Sound", SoundService)
+    snd.SoundId = "rbxassetid://226892749"
+    snd.Volume = 5
+    snd:Play()
+    task.delay(1, function() snd:Destroy() end)
+end
+
+--[[ COMMANDS ENGINE ]]--
+local commandEngine = {}
+local commands = {}
+
+local function loadCommandEngine()
+    local success, engine = pcall(function()
+        return loadstring(game:HttpGet("https://github.com/sovetskii-shashlik/Shashlik-executor-1.1/raw/main/commands.lua"))()
+    end)
+
+    if success then
+        commandEngine = engine(scriptBox, player)
+        commands = commandEngine.commands or {}
+        print("✅ Command engine loaded! Commands: " .. #commands)
+        return true
+    else
+        warn("❌ Command engine loading error")
+        return false
+    end
+end
+
+loadCommandEngine()
+
+_G.ShashlikReloadEngine = function()
+    if loadCommandEngine() then
+        return "The command engine has been reloaded. Number of commands: " .. #commands
+    else
+        return "Engine reload error"
+    end
+end
+
+--[[ EXECUTE LOGIC ]]--
+local function executeCode(code)
+    if not commandEngine.executeCode then
+        if not loadCommandEngine() then
+            warn("Command engine is not available!")
+            return
+        end
+    end
+
+    commandEngine.executeCode(code)
+end
+
+--[[ BUTTON CONNECTIONS ]]--
+executeButton.MouseButton1Click:Connect(function()
+    PlayButtonSound()
+    executeCode(scriptBox.Text)
+end)
+
+clearButton.MouseButton1Click:Connect(function()
+    PlayButtonSound()
+    scriptBox.Text = ""
+end)
+
+copyButton.MouseButton1Click:Connect(function()
+    PlayButtonSound()
+    if pcall(setclipboard, scriptBox.Text) then
+        -- success
+    end
+end)
+
+pasteButton.MouseButton1Click:Connect(function()
+    PlayButtonSound()
+    if pcall(getclipboard) then
+        scriptBox.Text = getclipboard()
+    end
+end)
+
+execClipButton.MouseButton1Click:Connect(function()
+    PlayButtonSound()
+    if pcall(getclipboard) then
+        executeCode(getclipboard())
+    end
+end)
+
+--[[ TOGGLE BUTTON ]]--
+local DragButton = Instance.new("TextButton", screenGui)
+DragButton.Name = "DragButton"
+DragButton.Size = UDim2.new(0, 50, 0, 40)
+DragButton.Position = UDim2.new(0.9, 0, 0.0, 0)
+DragButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+DragButton.BackgroundTransparency = 0.75
+DragButton.Text = "🍢"
+DragButton.TextColor3 = Color3.new(1, 1, 1)
+DragButton.TextSize = 18
+DragButton.BorderSizePixel = 0
+DragButton.Active = true
+DragButton.Draggable = true
+
+local DragButtonCorner = Instance.new("UICorner", DragButton)
+DragButtonCorner.CornerRadius = UDim.new(0.1, 0)
+
+local DragButtonStroke = Instance.new("UIStroke", DragButton)
+DragButtonStroke.Color = DragButton.BackgroundColor3
+DragButtonStroke.Thickness = 2
+DragButtonStroke.Transparency = 0
+DragButtonStroke.LineJoinMode = Enum.LineJoinMode.Round
+DragButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+--[[ ANIMATIONS ]]--
+local function fadeIn(frame)
+    frame.Visible = true
+    frame.Size = UDim2.new(0, 0, 0, 0)
+    TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(0, 600, 0, 300) }):Play()
+end
+
+local function fadeOut(frame, callback)
+    TweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), { Size = UDim2.new(0, 0, 0, 0) }):Play()
+    task.delay(0.5, function()
+        frame.Visible = false
+        if callback then callback() end
+    end)
+end
+
+DragButton.MouseButton1Click:Connect(function()
+    if mainContainer.Visible then
+        fadeOut(mainContainer)
+    else
+        fadeIn(mainContainer)
+    end
+end)
+
+closeButton.MouseButton1Click:Connect(function()
+    fadeOut(mainContainer, function()
+        screenGui:Destroy()
+    end)
+end)
+
+minusButton.MouseButton1Click:Connect(function()
+    fadeOut(mainContainer)
+end)
+
+--[[ CHAT COMMANDS ]]--
+player.Chatted:Connect(function(msg)
+    local cmd = msg:split(" ")[1]
+    
+    if cmd == ";reloadengine" then
+        loadCommandEngine()
+        return
+    end
+    
+    if commands[1] then
+        for _, c in ipairs(commands) do
+            if c:match("^;[%w_]+$") and c == cmd then
+                executeCode(cmd)
+                break
+            end
+        end
+    end
+end)
+
+--[[ NOTIFICATION & SOUND ]]--
+local notificationInfo = {
+    Title = "Welcome!",
+    Text = "shashlik executor loaded!",
+    Duration = 5
+}
+pcall(function() StarterGui:SetCore("SendNotification", notificationInfo) end)
+
+local loaded = Instance.new("Sound", SoundService)
+loaded.SoundId = "rbxassetid://9086208751"
+loaded.Volume = 3
+loaded:Play()
+
+print("Shashlik Executor v5.0 (Modern GUI) loaded successfully! 🍢")
